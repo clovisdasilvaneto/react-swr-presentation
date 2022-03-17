@@ -1,0 +1,575 @@
+import {
+  CodeSurfer,
+  CodeSurferColumns,
+  Step,
+} from "code-surfer";
+import { github, nightOwl } from "@code-surfer/themes";
+
+export const theme = nightOwl;
+
+# React SWR 👋
+
+And the benefits of using it in your application
+
+---
+
+## To start 😏
+Lets take a look how we use to do for grabbing the fitter data and use it in FC...
+
+---
+
+<CodeSurfer>
+
+```js title="First we create the constant.js file on its module's folder"
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+```
+
+```js title="Then we create the reducer" subtitle="But its not only it..."
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+
+import { getMe } from './constants'
+
+// fitter-cockpit/modules/fitter/reducer.js
+const initialState = {
+  data: {
+    countryCode: null,
+    createdDate: null,
+    email: null,
+    firstName: null,
+    id: null,
+    lastModifiedDate: null,
+    lastName: null,
+    locale: null,
+    photoUrl: null,
+    salutation: null,
+    timeZone: null,
+  },
+  status: {
+    loading: false,
+    success: false,
+    failure: false,
+  },
+}
+```
+
+```js title="we also have to create the switch conditions for the redux"
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+
+import { getMe } from './constants'
+
+// fitter-cockpit/modules/fitter/reducer.js
+const initialState = {
+  data: {
+    countryCode: null,
+    createdDate: null,
+    email: null,
+    firstName: null,
+    id: null,
+    lastModifiedDate: null,
+    lastName: null,
+    locale: null,
+    photoUrl: null,
+    salutation: null,
+    timeZone: null,
+  },
+  status: {
+    loading: false,
+    success: false,
+    failure: false,
+  },
+}
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case getMe.REQUEST: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: true,
+        },
+      }
+    }
+    case getMe.SUCCESS: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: true,
+          failure: false,
+        },
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
+      }
+    }
+    case getMe.FAILURE: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: false,
+          failure: true,
+        },
+      }
+    }
+    default:
+      return state
+  }
+}
+```
+
+```js title="Then the selectors..."
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+
+import { getMe } from './constants'
+
+// fitter-cockpit/modules/fitter/reducer.js
+const initialState = {
+  data: {
+    countryCode: null,
+    createdDate: null,
+    email: null,
+    firstName: null,
+    id: null,
+    lastModifiedDate: null,
+    lastName: null,
+    locale: null,
+    photoUrl: null,
+    salutation: null,
+    timeZone: null,
+  },
+  status: {
+    loading: false,
+    success: false,
+    failure: false,
+  },
+}
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case getMe.REQUEST: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: true,
+        },
+      }
+    }
+    case getMe.SUCCESS: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: true,
+          failure: false,
+        },
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
+      }
+    }
+    case getMe.FAILURE: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: false,
+          failure: true,
+        },
+      }
+    }
+    default:
+      return state
+  }
+}
+
+const branchSelector = state => state.fitter
+export const fitterSelector = state => branchSelector(state).data
+export const fitterIdSelector = state => fitterSelector(state).id
+export const fitterStatusSelector = state => branchSelector(state).status
+```
+
+```js title="The actions..."
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+
+import { getMe } from './constants'
+
+// fitter-cockpit/modules/fitter/reducer.js
+const initialState = {
+  data: {
+    countryCode: null,
+    createdDate: null,
+    email: null,
+    firstName: null,
+    id: null,
+    lastModifiedDate: null,
+    lastName: null,
+    locale: null,
+    photoUrl: null,
+    salutation: null,
+    timeZone: null,
+  },
+  status: {
+    loading: false,
+    success: false,
+    failure: false,
+  },
+}
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case getMe.REQUEST: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: true,
+        },
+      }
+    }
+    case getMe.SUCCESS: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: true,
+          failure: false,
+        },
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
+      }
+    }
+    case getMe.FAILURE: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: false,
+          failure: true,
+        },
+      }
+    }
+    default:
+      return state
+  }
+}
+
+const branchSelector = state => state.fitter
+export const fitterSelector = state => branchSelector(state).data
+export const fitterIdSelector = state => fitterSelector(state).id
+export const fitterStatusSelector = state => branchSelector(state).status
+
+// fitter-cockpit/modules/fitter/actions.js
+import { getMe } from './constants'
+import { apiFetch } from 'utils/api'
+import { changeLanguage } from '@audibene/ta-common-frontend/services/i18n'
+
+export function fetchMe() {
+  return async dispatch => {
+    dispatch({ type: getMe.REQUEST })
+    const payload = await apiFetch(`${process.env.REACT_APP_COCKPITAPI_URL}v1/fitters/me`)
+    if (!payload) {
+      dispatch({ type: getMe.FAILURE })
+      return
+    }
+    changeLanguage(payload.locale)
+    dispatch({ type: getMe.SUCCESS, payload })
+    return payload
+  }
+}
+
+```
+
+```js title="In order to finally use it:" subtitle="By the way, is there a problem with the suggested approach?"
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+
+import { getMe } from './constants'
+
+// fitter-cockpit/modules/fitter/reducer.js
+const initialState = {
+  data: {
+    countryCode: null,
+    createdDate: null,
+    email: null,
+    firstName: null,
+    id: null,
+    lastModifiedDate: null,
+    lastName: null,
+    locale: null,
+    photoUrl: null,
+    salutation: null,
+    timeZone: null,
+  },
+  status: {
+    loading: false,
+    success: false,
+    failure: false,
+  },
+}
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case getMe.REQUEST: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: true,
+        },
+      }
+    }
+    case getMe.SUCCESS: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: true,
+          failure: false,
+        },
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
+      }
+    }
+    case getMe.FAILURE: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: false,
+          failure: true,
+        },
+      }
+    }
+    default:
+      return state
+  }
+}
+
+const branchSelector = state => state.fitter
+export const fitterSelector = state => branchSelector(state).data
+export const fitterIdSelector = state => fitterSelector(state).id
+export const fitterStatusSelector = state => branchSelector(state).status
+
+// fitter-cockpit/modules/fitter/actions.js
+import { getMe } from './constants'
+import { apiFetch } from 'utils/api'
+import { changeLanguage } from '@audibene/ta-common-frontend/services/i18n'
+
+export function fetchMe() {
+  return async dispatch => {
+    dispatch({ type: getMe.REQUEST })
+    const payload = await apiFetch(`${process.env.REACT_APP_COCKPITAPI_URL}v1/fitters/me`)
+    if (!payload) {
+      dispatch({ type: getMe.FAILURE })
+      return
+    }
+    changeLanguage(payload.locale)
+    dispatch({ type: getMe.SUCCESS, payload })
+    return payload
+  }
+}
+
+// Somewhere where you want to fetch the fitter details
+const SomeComponent = () => {
+  const dispatch = useDispatch()
+  const fitter = useSelector(fitterSelector)
+
+  useEffect(() => {
+    dispatch(fetchMe())
+  }, [dispatch])
+}
+
+const AnotherComponent = () => {
+  const fitter = useSelector(fitterSelector)
+}
+```
+
+```js title="Now imagine changing this code:"
+// fitter-cockpit/modules/fitter/constants.js
+import { createApiConstants } from 'utils/constant'
+
+const namespace = 'fitter'
+export const getMe = createApiConstants(namespace, 'get')
+
+import { getMe } from './constants'
+
+// fitter-cockpit/modules/fitter/reducer.js
+const initialState = {
+  data: {
+    countryCode: null,
+    createdDate: null,
+    email: null,
+    firstName: null,
+    id: null,
+    lastModifiedDate: null,
+    lastName: null,
+    locale: null,
+    photoUrl: null,
+    salutation: null,
+    timeZone: null,
+  },
+  status: {
+    loading: false,
+    success: false,
+    failure: false,
+  },
+}
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case getMe.REQUEST: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: true,
+        },
+      }
+    }
+    case getMe.SUCCESS: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: true,
+          failure: false,
+        },
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
+      }
+    }
+    case getMe.FAILURE: {
+      return {
+        ...state,
+        status: {
+          ...state.status,
+          loading: false,
+          success: false,
+          failure: true,
+        },
+      }
+    }
+    default:
+      return state
+  }
+}
+
+const branchSelector = state => state.fitter
+export const fitterSelector = state => branchSelector(state).data
+export const fitterIdSelector = state => fitterSelector(state).id
+export const fitterStatusSelector = state => branchSelector(state).status
+
+// fitter-cockpit/modules/fitter/actions.js
+import { getMe } from './constants'
+import { apiFetch } from 'utils/api'
+import { changeLanguage } from '@audibene/ta-common-frontend/services/i18n'
+
+export function fetchMe() {
+  return async dispatch => {
+    dispatch({ type: getMe.REQUEST })
+    const payload = await apiFetch(`${process.env.REACT_APP_COCKPITAPI_URL}v1/fitters/me`)
+    if (!payload) {
+      dispatch({ type: getMe.FAILURE })
+      return
+    }
+    changeLanguage(payload.locale)
+    dispatch({ type: getMe.SUCCESS, payload })
+    return payload
+  }
+}
+
+// Somewhere where you want to fetch the fitter details
+const SomeComponent = () => {
+  const dispatch = useDispatch()
+  const fitter = useSelector(fitterSelector)
+
+  useEffect(() => {
+    dispatch(fetchMe())
+  }, [dispatch])
+}
+
+const AnotherComponent = () => {
+  const fitter = useSelector(fitterSelector)
+}
+```
+
+```js title="To this 😱:"
+// modules/fitter/hooks.js
+const useFitter = () => {
+  const {data, error} = useSWR('v1/fitters/me', apiFetch)
+
+  return {
+      user: data,
+      isLoading: !error && !data,
+      isError: error
+  }
+}
+
+// somewhere where you want to fetch the fitter details
+const SomeComponent = () => {
+  const {fitter, isLoading, hasError} = useFitter()
+}
+
+const AnotherComponent = () => {
+  const {fitter, isLoading, hasError} = useFitter()
+}
+```
+
+</CodeSurfer>
+
+---
+
+## Small POC time ⏰
+
+---
+
+docs:  
+[SWR docs](https://swr.vercel.app/)
+
+
+---
+
+That's all folks 🚀
